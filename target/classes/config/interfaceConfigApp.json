@@ -1,0 +1,303 @@
+{
+	"title": "Aplicación transaccional de Parranderos Uniandes",
+	"frameH": 600,
+	"frameW": 800,
+	"bannerPath": "./src/main/resources/config/logo.png",
+	"menuBar":
+	[
+		{ "menuTitle": "Roles de usuario [RF1]",
+		  "options":
+			[
+				{
+					"label": "Crear nuevo Rol de Usuario",
+					"event": "adicionarRolUsuario"
+				},
+				{
+					"label": "Listar Roles de Usuario",
+					"event": "listarRolUsuario"
+				},
+				{
+					"label": "Borrar Rol de Usuario",
+					"event": "eliminarRolUsuarioPorId"
+				}
+			]
+		},
+		{ "menuTitle": "Usuario [RF2]",
+			"options":
+			  [
+				  {
+					  "label": "Registrar nuevo Usuario",
+					  "event": "adicionarUsuario"
+				  },
+				  {
+					  "label": "Borrar Usuario por documento",
+					  "event": "eliminarUsuarioPorId"
+				  },
+				  {
+					  "label": "Buscar Usuario por documento",
+					  "event": "buscarUsuarioPorId"
+				  }
+			  ]
+		  },
+		  {
+			  "menuTitle": "TipoHabitacion [RF3]",
+			  "options":[
+				  {
+					  "label": "Crear nuevo Tipo de Habitacion",
+					  "event": "adicionarTipoHabitacion"
+				  },
+				  {
+					  "label": "Listar Tipos de Habitacion",
+					  "event": "listarTipoHabitacion"
+				  },
+				  {
+					  "label": "Borrar Tipo de Habitacion",
+					  "event": "eliminarTipoHabitacionPorId"
+				  }
+			  ]
+		  },
+		  {
+			  "menuTitle": "Habitacion [RF4]",
+			  "options":[
+				  {
+					"label": "Registrar nueva Cadena Hotelera",
+					"event": "adicionarCadenaHotelera"
+				  },
+				  {
+					"label":"Registrar nuevo Hotel",
+					"event":"adicionarHotel"
+				  },
+				  {
+					  "label": "Registrar nueva Habitacion",
+					  "event": "adicionarHabitacion"
+				  },
+				  {
+					  "label": "Listar Habitaciones",
+					  "event": "listarHabitacion"
+				  },
+				  {
+					  "label": "Borrar Habitacion por numero",
+					  "event": "eliminarHabitacionPorId"
+				  },
+				  {
+					  "label": "Buscar Habitacion por numero",
+					  "event": "buscarHabitacionPorId"
+				  }
+			  ]
+		  },
+		  {
+			  "menuTitle":"Servicio [RF5]",
+			  "options":[
+				  {
+					  "label": "Adicionar Tipo Servicio",
+					  "event": "adicionarTipoServicio"
+				  },
+				  {
+					  "label": "Adicionar Servicio",
+					  "event": "adicionarServicio"
+				  },
+				  {
+					  "label": "Listar Servicios",
+					  "event": "listarServicio"
+				  },
+				  {
+					  "label": "Borrar Servicio por Id",
+					  "event": "eliminarServicioPorId"
+				  },
+				  {
+					  "label": "Buscar Servicio por id",
+					  "event": "buscarServicioPorId"
+				  },
+				  {
+					  "label": "Adicionar producto a servicio",
+					  "event": "adicionarProductoAServicio"
+				  },
+				  {
+					  "label": "Listar productos de servicio",
+					  "event": "listarProductosDeServicio"
+				  }
+			  ]
+		  },
+		  {
+			  "menuTitle":"Plan de consumo [RF6]",
+			  "options":[
+				  {
+					  "label": "Registrar nuevo Plan de Consumo",
+					  "event": "adicionarPlanConsumo"
+				  },
+				  {
+					  "label": "Listar Planes de Consumo",
+					  "event": "listarPlanConsumo"
+				  },
+				  {
+					  "label": "Borrar Planes de Consumo por Id",
+					  "event": "eliminarPlanConsumoPorId"
+				  },
+				  {
+					  "label": "Buscar Plandes de Consumo por id",
+					  "event": "buscarPlanConsumoPorId"
+				  }
+			  ]
+			},
+			{
+				"menuTitle":"Reserva de cliente [RF7]",
+				"options":[
+					{
+						"label": "Registrar nueva reserva de habitacion",
+						"event": "adicionarReservaHabitacion"
+					},
+					{
+						"label": "Listar Reservas de Habitacion",
+						"event": "listarReservaHabitacion"
+					},
+					{
+						"label": "Borrar Reserva de Habitacion por Id",
+						"event": "eliminarReservaHabitacionPorId"
+					},
+					{
+						"label": "Buscar Reserva de Habitacion por id",
+						"event": "buscarReservaHabitacionPorId"
+					}
+				]
+			},
+		{
+			"menuTitle":"Reservar servicio [RF8]",
+			"options":[
+				{
+					"label": "Registrar nueva reserva de servicio",
+					"event": "adicionarReservaServicio"
+				},
+				{
+					"label": "Listar reservas de servicio",
+					"event": "listarReservaServicio"
+				},
+				{
+					"label": "Borrar Reserva de Servicio por Id",
+					"event": "eliminarReservaServicioPorId"
+				},
+				{
+					"label": "Buscar Reserva de Servicio por id",
+					"event": "buscarReservaServicioPorId"
+				}
+			]
+		},
+		{
+			"menuTitle": "Registrar entrada [RF9]",
+			"options":[
+				{
+					"label": "Registrar la entrada de un cliente",
+					"event": "asignarHabitacion"
+				}
+			]
+		},
+		{
+			"menuTitle":"Consumo de servicios [RF10]",
+			"options":[
+				{
+					"label": "Registrar el consumo de un servicio",
+					"event": "adicionarCuentaServicio"
+				},
+				{
+					"label": "Listar consumos de servicios",
+					"event": "listarCuentaServicio"
+				},
+				{
+					"label": "Borrar la cuenta de un servicio por Id",
+					"event": "eliminarCuentaServicioPorId"
+				},
+				{
+					"label": "Buscar la cuenta de un servicio por id",
+					"event": "buscarCuentaServicioPorId"
+				}
+			]
+		},
+		{
+			"menuTitle":"Registrar salida [RF11]",
+			"options":[
+				{
+					"label":"Registrar salida",
+					"event":"registrarSalidaDeReserva"
+				}
+			]
+		},
+		{
+			"menuTitle":"Consultas [RFCs]",
+			"options":
+			[
+			{
+				"label":"Dinero por servicos y habitacion en un tiempo dado",
+				"event":"darDineroRecolectadoPorServiciosEnCadaHabitacion"
+			},
+			{
+				"label":"20 servicios mas populares",
+				"event":"darLosServiciosMasPopulares"
+			},
+			{
+				"label":"Indice de ocupacion de un hotel",
+				"event":"darIndiceOcupacionHabitacionPorFecha"
+			},
+			{
+				"label":"Mostrar servicio por caracteristica",
+				"event":"darServiciosPorCaracteristica"
+			},
+			{
+				"label":"Consumo de un usuario en un tiempo dado",
+				"event":"darConsumoPorUsuario"
+			}
+			]
+		},
+		{ "menuTitle": "Mantenimiento",
+		  "options":
+			[
+				{
+					"label": "Mostrar log Hotelandes",
+					"event": "mostrarLogHotelandes"
+				},
+				{
+					"label": "Mostrar log datanucleus",
+					"event": "mostrarLogDatanuecleus"
+				},
+				{
+					"label": "Limpiar log de hotelandes",
+					"event": "limpiarLogHotelandes"
+				},
+				{
+					"label": "Limpiar log de datanucleus",
+					"event": "limpiarLogDatanucleus"
+				},
+				{
+					"label": "Limpiar Base de Datos",
+					"event": "limpiarBD"
+				}
+			]
+		},		
+		{ "menuTitle": "Documentación",
+		  "options":
+			[
+				{
+					"label": "Modelo conceptual",
+					"event": "mostrarModeloConceptual"
+				},
+				{
+					"label": "Esquema de la BD",
+					"event": "mostrarEsquemaBD"
+				},
+				{
+					"label": "Script creación de la BD",
+					"event": "mostrarScriptBD"
+				}
+			]
+		},		
+		{ "menuTitle": "Acerca de ...",
+		  "options":
+			[
+				{
+					"label": "Acerca de ...",
+					"event": "acercaDe"
+				}
+			]
+		}		
+		
+	]
+}
+	
