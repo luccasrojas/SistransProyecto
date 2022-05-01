@@ -5,7 +5,9 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import uniandes.isis2304.hotelandes.negocio.Habitacion;
 import uniandes.isis2304.hotelandes.negocio.ReservaHabitacion;
+import uniandes.isis2304.hotelandes.negocio.TipoHabitacion;
 
 /**
  * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto RESERVAHABITACION de Hotelandes
@@ -156,6 +158,8 @@ class SQLReservaHabitacion
 		q.executeUnique();
 	}
 	
-
-	
+	public String reservarAlojamientoParaConvencion(String tiposHabitacion,String cantidad,String servicios)
+	{
+		return null;
+	}
 }
