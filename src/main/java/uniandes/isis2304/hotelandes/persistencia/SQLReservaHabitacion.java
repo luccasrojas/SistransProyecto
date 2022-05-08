@@ -174,17 +174,21 @@ class SQLReservaHabitacion
 	//Funcion que devuelve las habitaciones disponibles para una fecha dada
 	public List<Object> darHabitacionesDisponibles(PersistenceManager pm, String fecha, String nombreHotel,String tipoHabitacion)
 	{
-		String peticion = "SELECT NUMERO FROM HABITACION WHERE (NOMBRE_HOTEL,NUMERO) NOT IN (SELECT HABITACION.NOMBRE_HOTEL,HABITACION.NUMERO FROM HABITACION INNER JOIN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = "+nombreHotel+ " AND FECHA_IN<= "+fecha+" AND FECHA_OUT>= "+fecha+" ) A ON HABITACION.NOMBRE_HOTEL =A.NOMBRE_HOTEL  AND HABITACION.NUMERO = A.NUMERO_HABITACION)";
-		peticion += " AND TIPO = "+tipoHabitacion;
+		String peticion = "SELECT NUMERO FROM HABITACION WHERE (NOMBRE_HOTEL,NUMERO) NOT IN (SELECT HABITACION.NOMBRE_HOTEL,HABITACION.NUMERO FROM HABITACION INNER JOIN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = '"+nombreHotel+ "' AND FECHA_IN<= '"+fecha+"' AND FECHA_OUT>= '"+fecha+"' ) A ON HABITACION.NOMBRE_HOTEL =A.NOMBRE_HOTEL  AND HABITACION.NUMERO = A.NUMERO_HABITACION)";
+		peticion += " AND TIPO_HABITACION = '"+tipoHabitacion+"'";
 		Query q = pm.newQuery(SQL,peticion);
 		return q.executeList();
 	}
 
-	public int darNumeroReservas(PersistenceManager pm,String fechaIn,String fechaOut,String nombreHotel)
+	public String darNumeroReservas(PersistenceManager pm,String fechaIn,String fechaOut,String nombreHotel)
 	{
-		String peticion = "SELECT COUNT(*) FROM RESERVA_HABITACION WHERE (NOMBRE_HOTEL,NUMERO_HABITACION) NOT IN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = "+nombreHotel+" AND NUMERO_HABITACION IS NULL AND ( "+fechaOut+" <=FECHA_IN OR "+fechaIn+" >=FECHA_OUT));";
+		System.out.println("7.2");
+		String peticion = "SELECT COUNT(*) FROM RESERVA_HABITACION WHERE (NOMBRE_HOTEL,NUMERO_HABITACION) NOT IN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = '"+nombreHotel+"' AND NUMERO_HABITACION IS NULL AND ( '"+fechaOut+"' <=FECHA_IN OR '"+fechaIn+"' >=FECHA_OUT)) AND NUMERO_HABITACION IS NULL";
 		Query q = pm.newQuery(SQL,peticion);
-		return (int) q.executeUnique();
+		System.out.println("7.3");
+		System.out.println(q.executeList());
+		System.out.println("7.4");
+		return q.executeUnique().toString();
 	}
 	public ArrayList<Object> darHabitacionesDisponiblesParaConvencionTipo(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, String tipoHabitacion)
 	{
@@ -221,31 +225,40 @@ class SQLReservaHabitacion
 	{
 		try
 		{
+			System.out.println("3");
 			List<HashMap<String,ArrayList<String>>> res = new ArrayList<HashMap<String,ArrayList<String>>>();
-			boolean c = true;
+			System.out.println("4");
+			boolean c = false;
 			for(String tipoHabitacion:tiposHabitacionCantidad.keySet())
 			{
+				System.out.println("5");
 				int cantidad = tiposHabitacionCantidad.get(tipoHabitacion).size();
 				ArrayList<Object> habitaciones = darHabitacionesDisponiblesParaConvencionTipo(pm,fechaIn,fechaOut,nombreHotel,tipoHabitacion);
+				System.out.println("6");
 				ArrayList<String> strHabitaciones = new ArrayList<String>();
 				for (Object habitacion:habitaciones)
 				{
+					System.out.println("7");
 					strHabitaciones.add(habitacion.toString());
+					System.out.println("7.1");
 				}
-				if(habitaciones.size()-darNumeroReservas(pm, fechaIn, fechaOut, nombreHotel)<cantidad)
+				if((habitaciones.size()-Integer.parseInt(darNumeroReservas(pm, fechaIn, fechaOut, nombreHotel)))<cantidad)
 				{
-					c = false;
+					System.out.println("8");
+					return null;
 				}
 				else
 				{
+					System.out.println("9");
 					HashMap<String,ArrayList<String>> habitacionesDisponibles = new HashMap<String,ArrayList<String>>();
 					habitacionesDisponibles.put(tipoHabitacion, strHabitaciones);
 					res.add(habitacionesDisponibles);
 				}
 
 			}
-			if (c)
+			if (!c)
 			{
+				System.out.println("10");
 				return res;
 			}
 			else

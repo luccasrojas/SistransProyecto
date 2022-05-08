@@ -1945,7 +1945,13 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 				//		 servicios = ["1" , "19" , "8"]
 
 				// EXECUTE
+				System.out.println(fechaInVal);
+				System.out.println(fechaOutVal);
+				System.out.println(nombreHotelVal);
+				System.out.println(campo);
+				System.out.println(servicios);
 				List<HashMap<String,ArrayList<String>>> resp = hotelandes.registrarReservaConvencion(fechaInVal, fechaOutVal, nombreHotelVal, campo, servicios);
+				System.out.println("aqui");
 				for (HashMap<String,ArrayList<String>> res : resp) {
 					String resultado = "";
 					for (String key : res.keySet()) {

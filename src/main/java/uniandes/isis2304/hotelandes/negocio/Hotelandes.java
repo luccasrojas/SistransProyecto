@@ -921,6 +921,7 @@ public class Hotelandes {
 	//Registrar reserva de una convención
 	public List<HashMap<String,ArrayList<String>>> registrarReservaConvencion(String nombreHotel,String fechaInicio,String fechaFin,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
 	{
+		System.out.println("1");
 		return ph.inscribirReservasConvencion(nombreHotel, fechaInicio, fechaFin, tiposHabitacion, servicios);
 	}
 }

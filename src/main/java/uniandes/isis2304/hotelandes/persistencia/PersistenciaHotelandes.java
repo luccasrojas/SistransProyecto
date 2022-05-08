@@ -2103,6 +2103,7 @@ public class PersistenciaHotelandes {
 
 	public List<HashMap<String,ArrayList<String>>> inscribirReservasConvencion(String fechaIn, String fechaOut, String nombreHotel,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
 	{
+		System.out.println("2");
 		return sqlReservaHabitacion.darHabitacionesDisponiblesParaConvencion(pmf.getPersistenceManager(), fechaIn, fechaOut, nombreHotel, tiposHabitacion, servicios);
 	}
 	
