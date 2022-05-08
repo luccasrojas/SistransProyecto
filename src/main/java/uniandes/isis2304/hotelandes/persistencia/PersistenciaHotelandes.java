@@ -3,7 +3,6 @@ package uniandes.isis2304.hotelandes.persistencia;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOHelper;
@@ -911,7 +910,7 @@ public class PersistenciaHotelandes {
 	}
 
 	
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo,Optional<Long> idConvencion)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo,Long idConvencion)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx=pm.currentTransaction();
@@ -1952,6 +1951,9 @@ public class PersistenciaHotelandes {
 		return sqlReservaServicio.darReservaServicios(pmf.getPersistenceManager());
 	}
 
+
+	//-------------------------------------------------------------------------------------
+
 	//Requerimientos funcionales de consulta
 
 	//Requerimiento funcional de consutla 1
@@ -2093,5 +2095,6 @@ public class PersistenciaHotelandes {
 	{
 		return sqlProducto.darProductosPorServicio(pmf.getPersistenceManager(),idServicio);
 	}
+	
 	
 }
