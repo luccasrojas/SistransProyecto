@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 
 import uniandes.isis2304.hotelandes.persistencia.PersistenciaHotelandes;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -203,7 +205,7 @@ public class Hotelandes {
 	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo, Long idConvencion)
 	{
 		log.info ("Adicionando reserva de habitacion");
-		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,idConvencion);
+		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,null);
 		log.info ("Adicionando reserva de habitacion");
 		return reservaHabitacion;
 	}
@@ -849,7 +851,11 @@ public class Hotelandes {
 		log.info ("Generando los VO de Reserva de servicio: " + reservasServicios.size() + " reservas de servicios existentes");
 		return reservasServicios;
 	}
+
+
 	//Requerimientos funcionales de consulta
+
+
 	public List<String[]> darDineroRecolectadoPorServiciosEnCadaHabitacion(String fechaInf,String fechaSup)
 	{
 		log.info ("Consultando el dinero recolectado por servicios en cada habitacion");
@@ -910,5 +916,12 @@ public class Hotelandes {
 		}
 		log.info ("Generando los VO de Producto: " + productos.size() + " productos existentes");
 		return productos;
+	}
+
+	//Registrar reserva de una convención
+	public List<HashMap<String,ArrayList<String>>> registrarReservaConvencion(String nombreHotel,String fechaInicio,String fechaFin,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
+	{
+		System.out.println("1");
+		return ph.inscribirReservasConvencion(nombreHotel, fechaInicio, fechaFin, tiposHabitacion, servicios);
 	}
 }

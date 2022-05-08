@@ -1,6 +1,8 @@
 package uniandes.isis2304.hotelandes.persistencia;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -910,7 +912,7 @@ public class PersistenciaHotelandes {
 	}
 
 	
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo, Long idConvencion)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo,Long idConvencion)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx=pm.currentTransaction();
@@ -1951,6 +1953,9 @@ public class PersistenciaHotelandes {
 		return sqlReservaServicio.darReservaServicios(pmf.getPersistenceManager());
 	}
 
+
+	//-------------------------------------------------------------------------------------
+
 	//Requerimientos funcionales de consulta
 
 	//Requerimiento funcional de consutla 1
@@ -2092,5 +2097,15 @@ public class PersistenciaHotelandes {
 	{
 		return sqlProducto.darProductosPorServicio(pmf.getPersistenceManager(),idServicio);
 	}
+
+	//---------------------------------------------------------------------------------------------------------------------
+	//Metodo para inscribir una convencion
+
+	public List<HashMap<String,ArrayList<String>>> inscribirReservasConvencion(String fechaIn, String fechaOut, String nombreHotel,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
+	{
+		System.out.println("2");
+		return sqlReservaHabitacion.darHabitacionesDisponiblesParaConvencion(pmf.getPersistenceManager(), fechaIn, fechaOut, nombreHotel, tiposHabitacion, servicios);
+	}
+	
 	
 }
