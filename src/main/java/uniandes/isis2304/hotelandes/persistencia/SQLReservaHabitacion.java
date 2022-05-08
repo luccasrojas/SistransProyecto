@@ -1,15 +1,11 @@
 
 package uniandes.isis2304.hotelandes.persistencia;
 
-import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,10 +63,16 @@ class SQLReservaHabitacion
 	 * @param idPlanConsumo - Id del plan de consumo con el que se costeará la reserva
 	 * @return El número de tuplas insertadas
 	 */
-	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado, Optional<Long> idConvencion)
+	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado, Long idConvencion)
 	{
-        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
+		Query q;
+		if (idConvencion == null) {
+			q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO) values (?, ?, ?, ?, ?, ?, ?, ?)");
+		}
+		else {
+        	q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		}
+		q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
         return (long) q.executeUnique();
 	}
 

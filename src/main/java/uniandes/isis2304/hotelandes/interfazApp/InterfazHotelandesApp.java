@@ -1496,7 +1496,7 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 				String nombreHotelStr = nombreHotel.getText();
 				long idPlanConsumoLong = Long.parseLong(idPlanConsumo.getText());
 				
-				VOReservaHabitacion c = hotelandes.adicionarReservaHabitacion(fechaInVal, fechaOutVal, numPersonasInt, nombreHotelStr, idPlanConsumoLong);
+				VOReservaHabitacion c = hotelandes.adicionarReservaHabitacion(fechaInVal, fechaOutVal, numPersonasInt, nombreHotelStr, idPlanConsumoLong, null);
 				
 				String resultado = "En adicionarReservaHabitacion\n\n";
 				resultado += "Reserva de habitacion adicionada exitosamente: " + c;
