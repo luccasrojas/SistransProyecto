@@ -1,19 +1,17 @@
 
 package uniandes.isis2304.hotelandes.persistencia;
 
-import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import uniandes.isis2304.hotelandes.negocio.ReservaHabitacion;
+import uniandes.isis2304.hotelandes.negocio.TipoDocumento;
 
 /**
  * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto RESERVAHABITACION de Hotelandes
@@ -66,7 +64,7 @@ class SQLReservaHabitacion
 	 * @param idPlanConsumo - Id del plan de consumo con el que se costeará la reserva
 	 * @return El número de tuplas insertadas
 	 */
-	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado, Long idConvencion)
+	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, Long idPlanConsumo, int pagado, long idConvencion)
 	{
         Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
@@ -219,23 +217,30 @@ class SQLReservaHabitacion
 
 	//Funcion que devuelve las habitaciones disponibles para una fecha dada
 	//GRANDE
-	public ArrayList<Object> darHabitacionesDisponiblesParaConvencion(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, HashMap<String,ArrayList<Object>> tiposHabitacionCantidad)
+	public List<HashMap<String,ArrayList<String>>> darHabitacionesDisponiblesParaConvencion(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, HashMap<String,List<List<String[]>>> tiposHabitacionCantidad, String[] servicios)
 	{
 		try
 		{
-			ArrayList<Object> res = new ArrayList<Object>();
+			List<HashMap<String,ArrayList<String>>> res = new ArrayList<HashMap<String,ArrayList<String>>>();
 			boolean c = true;
 			for(String tipoHabitacion:tiposHabitacionCantidad.keySet())
 			{
 				int cantidad = tiposHabitacionCantidad.get(tipoHabitacion).size();
 				ArrayList<Object> habitaciones = darHabitacionesDisponiblesParaConvencionTipo(pm,fechaIn,fechaOut,nombreHotel,tipoHabitacion);
+				ArrayList<String> strHabitaciones = new ArrayList<String>();
+				for (Object habitacion:habitaciones)
+				{
+					strHabitaciones.add(habitacion.toString());
+				}
 				if(habitaciones.size()-darNumeroReservas(pm, fechaIn, fechaOut, nombreHotel)<cantidad)
 				{
 					c = false;
 				}
 				else
 				{
-					res.add(habitaciones);
+					HashMap<String,ArrayList<String>> habitacionesDisponibles = new HashMap<String,ArrayList<String>>();
+					habitacionesDisponibles.put(tipoHabitacion, strHabitaciones);
+					res.add(habitacionesDisponibles);
 				}
 
 			}
@@ -254,6 +259,38 @@ class SQLReservaHabitacion
 			return null;
 		}
 	}
+	public void reservarHabitaciones(SQLHuespedReserva hr,PersistenceManager pm,String nombreHotel,String fechaIn,String fechaOut,HashMap<String,ArrayList<String>> habitacionesPorTipo,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacionClientes,long idConvencion)
+	{
+		for(String tipoHabitacion:habitacionesPorTipo.keySet())
+		//tipoHabitacion -> String del tipo de habitacion
+		{
+			ArrayList<String> habitacionPorTipo = new ArrayList<String>(habitacionesPorTipo.get(tipoHabitacion));
+			ArrayList<ArrayList<String[]>> usuarios = new ArrayList<ArrayList<String[]>>(tiposHabitacionClientes.get(tipoHabitacion));
+			//Lista de usuarios por tipo de habitacion (ArryList<ArrayList<Object>>)
+			SQLUtil aux =new SQLUtil(ph);
+			for(int i=0;i<usuarios.size();i++)
+			{
+				long idReservaHabitacion = aux.nextval(pm);
+				//Por cada una de las habitaciones necesarias hacer la reserva y generar huesped reserva
+				adicionarReservaHabitacion(pm, idReservaHabitacion, fechaIn, fechaOut,usuarios.get(i).size() , nombreHotel,Long.valueOf(habitacionPorTipo.get(i)),0, idConvencion);
+				for(int j=0;j<usuarios.get(i).size();j++)
+				{
+					//Todos los que se quedan en una misma habitacion anadirlos a huesped reserva
+					if (j==0)
+					{
+						//Persistence manager pm,long idReservaHabitacion,Tipo documento tipoDocumento,int numeroDocumento,int acompanante
+					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[2]), 1);
+					}
+					else
+					{
+					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[2]), 0);
+					}
+
+				}
+				
+			}
+		}
+	}	
 	/*
 	public ArrayList<Object> darHabitacionesParaReservas(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel,String tipoHabitacion)
 	{

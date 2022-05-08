@@ -12,6 +12,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.jdo.JDODataStoreException;
@@ -27,6 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
+
+import java.awt.Font;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -1865,6 +1869,103 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 		}
 	}
 
+	/****************************************************************
+	 * RF 12
+	 * ****************************************************************/
+
+	public void registrarReservarConvencion() {
+		try 
+		{
+			JTextField fechaIn = new JTextField();
+			JTextField fechaOut = new JTextField();
+			JTextField nombreHotel = new JTextField();
+			JTextField campoUsuarios = new JTextField();
+			JTextField campoServicios = new JTextField();
+
+			JLabel formatoCampoUsuarios = new JLabel("SENCILLA:CC-101389129;FAMILIAR:CC-1828021_TI-199019315,CE-1920173");
+			formatoCampoUsuarios.setFont(new Font("Consolas", Font.PLAIN, 14));
+			JLabel formatoCampoServicios = new JLabel("1,19,8");
+			formatoCampoServicios.setFont(new Font("Consolas", Font.PLAIN, 14));
+
+			int result = JOptionPane.showConfirmDialog(null, new JComponent[] {
+				new JLabel("Información de la convencion a registrar"),
+				new JLabel("Fecha de inicio (DD/MM/AA):"), fechaIn,
+				new JLabel("Fecha de salida (DD/MM/AA):"), fechaOut,
+				new JLabel("Nombre del hotel:"), nombreHotel,
+				new JLabel("Habitaciones a reservar, formato:"),
+				formatoCampoUsuarios, campoUsuarios,
+				new JLabel("Lista de Servicios, formato:"),
+				formatoCampoServicios, campoServicios,
+			}, "Registrar reserva de convencion", JOptionPane.PLAIN_MESSAGE);
+
+			if (result == JOptionPane.OK_OPTION && (
+					fechaIn.getText().length() == 0 ||
+					fechaOut.getText().length() == 0 ||
+					nombreHotel.getText().length() == 0 ||
+					campoUsuarios.getText().length() == 0
+			)) {
+				JOptionPane.showMessageDialog(this, new JLabel("Se deben completar todos los campos obligatorios"), "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				// parse to send data
+				String fechaInVal = fechaIn.getText();
+				String fechaOutVal = fechaOut.getText();
+				String nombreHotelVal = nombreHotel.getText();
+				// INICIAL (campoUsuarios)
+				// SENCILLA:CC-101389129;FAMILIAR:CC-1828021_TI-199019315,CE-1920173
+				String[] habitaciones = campoUsuarios.getText().split(";");
+				//		 habitaciones = ["SENCILLA:CC-101389129" , "FAMILIAR:CC-1828021_TI-199019315,CE-1920173"]
+				
+				HashMap<String,List<List<String[]>>> campo = new HashMap<String,List<List<String[]>>>();
+				for (String habitacion : habitaciones) {
+					String tipoHabitacion = habitacion.split(":")[0];
+					// 	   tipoHabitacion = FAMILIAR
+
+					String[] usuarios = habitacion.split(":")[1].split(",");
+					// 		 usuarios = ["CC-1828021_TI-199019315" , "CE-1920173"]
+					
+					List<List<String[]>> listaUsuarios = new ArrayList<List<String[]>>();
+					for (String usuarioshab_ : usuarios) {
+						String[] usuarioshab = usuarioshab_.split("_");
+						// 		 usuarioshab = ["CC-1828021" , "TI-199019315"]
+						
+						List<String[]> listaHabitacion = new ArrayList<String[]>();
+						for (String usuario : usuarioshab) {
+							String[] usu = new String[2];
+							usu[0] = usuario.split("-")[0];
+							// 		 tdoc = "CC"
+							usu[1] = usuario.split("-")[1];
+							// 		 ndoc = "1828021"
+							listaHabitacion.add(usu);
+						}
+						listaUsuarios.add(listaHabitacion);
+					}
+					campo.put(tipoHabitacion, listaUsuarios);
+				}
+				String[] servicios = campoServicios.getText().split(",");
+				//		 servicios = ["1" , "19" , "8"]
+
+				// EXECUTE
+				List<HashMap<String,ArrayList<String>>> resp = hotelandes.registrarReservaConvencion(fechaInVal, fechaOutVal, nombreHotelVal, campo, servicios);
+				for (HashMap<String,ArrayList<String>> res : resp) {
+					String resultado = "";
+					for (String key : res.keySet()) {
+						resultado += key + ": ";
+						for (String val : res.get(key)) {
+							resultado += val + " ";
+						}
+						resultado += "\n";
+					}
+					System.out.println(resultado);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+	}
 
 	/********************************
 	 * RFCs
