@@ -1,13 +1,20 @@
 
 package uniandes.isis2304.hotelandes.persistencia;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-import uniandes.isis2304.hotelandes.negocio.Habitacion;
 import uniandes.isis2304.hotelandes.negocio.ReservaHabitacion;
-import uniandes.isis2304.hotelandes.negocio.TipoHabitacion;
 
 /**
  * Clase que encapsula los métodos que hacen acceso a la base de datos para el concepto RESERVAHABITACION de Hotelandes
@@ -60,9 +67,9 @@ class SQLReservaHabitacion
 	 * @param idPlanConsumo - Id del plan de consumo con el que se costeará la reserva
 	 * @return El número de tuplas insertadas
 	 */
-	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado)
+	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado, Optional<Long> idConvencion)
 	{
-        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO) values (?, ?, ?, ?, ?, ?, ?, ?)");
+        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
         return (long) q.executeUnique();
 	}
@@ -162,4 +169,131 @@ class SQLReservaHabitacion
 	{
 		return null;
 	}
+
+
+
+
+	//Funcion que devuelve las habitaciones disponibles para una fecha dada
+	public List<Object> darHabitacionesDisponibles(PersistenceManager pm, String fecha, String nombreHotel,String tipoHabitacion)
+	{
+		String peticion = "SELECT NUMERO FROM HABITACION WHERE (NOMBRE_HOTEL,NUMERO) NOT IN (SELECT HABITACION.NOMBRE_HOTEL,HABITACION.NUMERO FROM HABITACION INNER JOIN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = "+nombreHotel+ " AND FECHA_IN<= "+fecha+" AND FECHA_OUT>= "+fecha+" ) A ON HABITACION.NOMBRE_HOTEL =A.NOMBRE_HOTEL  AND HABITACION.NUMERO = A.NUMERO_HABITACION)";
+		peticion += " AND TIPO = "+tipoHabitacion;
+		Query q = pm.newQuery(SQL,peticion);
+		return q.executeList();
+	}
+
+	public int darNumeroReservas(PersistenceManager pm,String fechaIn,String fechaOut,String nombreHotel)
+	{
+		String peticion = "SELECT COUNT(*) FROM RESERVA_HABITACION WHERE (NOMBRE_HOTEL,NUMERO_HABITACION) NOT IN (SELECT NOMBRE_HOTEL,NUMERO_HABITACION FROM RESERVA_HABITACION WHERE NOMBRE_HOTEL = "+nombreHotel+" AND NUMERO_HABITACION IS NULL AND ( "+fechaOut+" <=FECHA_IN OR "+fechaIn+" >=FECHA_OUT));";
+		Query q = pm.newQuery(SQL,peticion);
+		return (int) q.executeUnique();
+	}
+	public ArrayList<Object> darHabitacionesDisponiblesParaConvencionTipo(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, String tipoHabitacion)
+	{
+		try{
+		long dayInms = 24*60*60*1000;
+		String dateFormat = "dd/MM/yy";
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+		Date dateIn = sdf.parse(fechaIn);
+		Date date = dateIn;
+		ArrayList<Object> habitaciones= new ArrayList<Object>(darHabitacionesDisponibles(pm, fechaIn, nombreHotel, tipoHabitacion)); 
+		while (date.getTime()<=sdf.parse(fechaOut).getTime())
+		{
+			List<Object> habitacionesDisponibles = darHabitacionesDisponibles(pm,sdf.format(date),nombreHotel,tipoHabitacion);
+			for (Object habitacion:habitaciones)
+			{
+				if(!habitacionesDisponibles.contains(habitacion))
+				{
+					habitaciones.remove(habitacion);
+				}
+			}
+			date.setTime(date.getTime()+dayInms);
+		}
+		return habitaciones;
+		
+	}catch(Exception e){
+		e.printStackTrace();
+		return null;
+	}
+	}
+
+	//Funcion que devuelve las habitaciones disponibles para una fecha dada
+	//GRANDE
+	public ArrayList<Object> darHabitacionesDisponiblesParaConvencion(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, HashMap<String,ArrayList<Object>> tiposHabitacionCantidad)
+	{
+		try
+		{
+			ArrayList<Object> res = new ArrayList<Object>();
+			boolean c = true;
+			for(String tipoHabitacion:tiposHabitacionCantidad.keySet())
+			{
+				int cantidad = tiposHabitacionCantidad.get(tipoHabitacion).size();
+				ArrayList<Object> habitaciones = darHabitacionesDisponiblesParaConvencionTipo(pm,fechaIn,fechaOut,nombreHotel,tipoHabitacion);
+				if(habitaciones.size()-darNumeroReservas(pm, fechaIn, fechaOut, nombreHotel)<cantidad)
+				{
+					c = false;
+				}
+				else
+				{
+					res.add(habitaciones);
+				}
+
+			}
+			if (c)
+			{
+				return res;
+			}
+			else
+			{
+				return null;
+			}
+				
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}
+	/*
+	public ArrayList<Object> darHabitacionesParaReservas(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel,String tipoHabitacion)
+	{
+		try
+		{
+			ArrayList<Object> res = new ArrayList<Object>();
+			
+			boolean c = true;
+			for(String tipoHabitacion:tiposHabitacionCantidad.keySet())
+			{
+				int cantidad = tiposHabitacionCantidad.get(tipoHabitacion).size();
+				ArrayList<Object> habitaciones = darHabitacionesDisponiblesParaConvencionTipo(pm,fechaIn,fechaOut,nombreHotel,tipoHabitacion);
+				if(habitaciones.size()-darNumeroReservas(pm, fechaIn, fechaOut, nombreHotel)<cantidad)
+				{
+					c = false;
+				}
+				else
+				{
+					res.add(habitaciones);
+				}
+
+			}
+			if (c)
+			{
+				return res;
+			}
+			else
+			{
+				return null;
+			}
+				
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}*/	
+
+
+	//Requerimeinto de consulta 6 
+	//RC6
+
 }

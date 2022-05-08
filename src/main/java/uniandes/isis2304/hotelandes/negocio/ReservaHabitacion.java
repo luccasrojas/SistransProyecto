@@ -1,5 +1,6 @@
 package uniandes.isis2304.hotelandes.negocio;
 import java.sql.Timestamp;
+import java.util.Optional;
 public class ReservaHabitacion implements VOReservaHabitacion
 {
     private long idReservaHabitacion;
@@ -11,6 +12,7 @@ public class ReservaHabitacion implements VOReservaHabitacion
     private int numeroHabitacion;
     private long idPlanConsumo;
     private int pagado;
+    private Optional<Long> idConvencion;
     
     public ReservaHabitacion() 
     {
@@ -23,10 +25,11 @@ public class ReservaHabitacion implements VOReservaHabitacion
         this.numeroHabitacion=0;
         this.idPlanConsumo=0;
         this.pagado=0;
+        this.idConvencion=Optional.of(0L);
     }
 
     public ReservaHabitacion(long idReservaHabitacion, Timestamp fechaIn, Timestamp fechaOut, int numPersonas,
-            double cuentaMinibar, String nombreHotel, int numeroHabitacion, long idPlanConsumo, int pagado) {
+            double cuentaMinibar, String nombreHotel, int numeroHabitacion, long idPlanConsumo, int pagado, Optional<Long> idConvencion) {
         this.idReservaHabitacion = idReservaHabitacion;
         this.fechaIn = fechaIn;
         this.fechaOut = fechaOut;
@@ -36,6 +39,7 @@ public class ReservaHabitacion implements VOReservaHabitacion
         this.numeroHabitacion = numeroHabitacion;
         this.idPlanConsumo = idPlanConsumo;
         this.pagado = pagado;
+        this.idConvencion = idConvencion;
     }
 
 
@@ -110,6 +114,14 @@ public class ReservaHabitacion implements VOReservaHabitacion
 	public void setPagado(int pagado) {
 		this.pagado = pagado;
 	}
+
+    public Optional<Long> getIdConvencion() {
+        return idConvencion;
+    }
+
+    public void setIdConvencion(Optional<Long> idConvencion) {
+        this.idConvencion = idConvencion;
+    }
 
 	@Override
 	public String toString() {

@@ -3,6 +3,7 @@ package uniandes.isis2304.hotelandes.persistencia;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOHelper;
@@ -910,7 +911,7 @@ public class PersistenciaHotelandes {
 	}
 
 	
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo,Optional<Long> idConvencion)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx=pm.currentTransaction();
@@ -918,12 +919,12 @@ public class PersistenciaHotelandes {
 		{
 			long id = nextval ();
 			tx.begin();
-			long tuplasInsertadas = sqlReservaHabitacion.adicionarReservaHabitacion(pm,id,fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,0);
+			long tuplasInsertadas = sqlReservaHabitacion.adicionarReservaHabitacion(pm,id,fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,0,idConvencion);
 			tx.commit ();
 			
 			log.trace ("Inserción de reserva de habitacion: " + id + ": " + tuplasInsertadas + " tuplas insertadas");
 			
-			return new ReservaHabitacion(id,Timestamp.valueOf(fechaIn),Timestamp.valueOf(fechaOut),numPersonas,0,nombreHotel,0,idPlanConsumo,0);
+			return new ReservaHabitacion(id,Timestamp.valueOf(fechaIn),Timestamp.valueOf(fechaOut),numPersonas,0,nombreHotel,0,idPlanConsumo,0,idConvencion);
 		}
 		catch (Exception e)
 		{

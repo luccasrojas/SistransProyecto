@@ -200,10 +200,10 @@ public class Hotelandes {
 		log.info ("Adicionando plan de consumo " + planConsumo.getIdPlanConsumo());
 		return planConsumo;
 	}
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo, long idConvencion)
 	{
 		log.info ("Adicionando reserva de habitacion");
-		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo);
+		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,idConvencion);
 		log.info ("Adicionando reserva de habitacion");
 		return reservaHabitacion;
 	}
