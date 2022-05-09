@@ -66,6 +66,9 @@ public class PersistenciaHotelandes {
 	private SQLCuentaServicio sqlCuentaServicio;
 	private SQLHuespedReserva sqlHuespedReserva;
 	private SQLReservaHabitacion sqlReservaHabitacion;
+	private SQLServiciosConvencion sqlServiciosConvencion;
+	private SQLParticipantesConvencion sqlParticipantesConvencion;
+	private SQLConvencion sqlConvencion;
 	private SQLPlanConsumo sqlPlanConsumo;
 	private SQLProducto sqlProducto;
 	private SQLSpaa sqlSpaa;
@@ -98,25 +101,28 @@ public class PersistenciaHotelandes {
 		crearClasesSQL ();
 		
 		tablas = new LinkedList<String>();
-		tablas.add("Hotelandes_sequence");
-		tablas.add("CADENA_HOTELERA");
-		tablas.add("ROL_USUARIO");
-		tablas.add("TIPO_HABITACION");
-		tablas.add("TIPO_SERVICIO");
-		tablas.add("HOTEL");
-		tablas.add("USUARIO");
-		tablas.add("HABITACION");
-		tablas.add("SERVICIO");
-		tablas.add("PISCINA");
-		tablas.add("GIMNASIO");
-		tablas.add("INTERNET");
-		tablas.add("ESTABLECIMIENTO");
-		tablas.add("PRESTAMO_UTENSILIO");
-		tablas.add("SALON_CONFERENCIA");
-		tablas.add("SALON_REUNION");
-		tablas.add("SPAA");
-		tablas.add("PRODUCTO");
-		tablas.add("PLAN_CONSUMO");
+		tablas.add("Hotelandes_sequence");//0
+		tablas.add("CADENA_HOTELERA");//1
+		tablas.add("ROL_USUARIO");//2
+		tablas.add("TIPO_HABITACION");//3
+		tablas.add("TIPO_SERVICIO");//4
+		tablas.add("HOTEL");//5
+		tablas.add("USUARIO");//6
+		tablas.add("HABITACION");//7
+		tablas.add("SERVICIO");//8
+		tablas.add("PISCINA");//9
+		tablas.add("GIMNASIO");//10
+		tablas.add("INTERNET");//11
+		tablas.add("ESTABLECIMIENTO");//12
+		tablas.add("PRESTAMO_UTENSILIO");//13
+		tablas.add("SALON_CONFERENCIA");//14
+		tablas.add("SALON_REUNION");//15
+		tablas.add("SPAA");//16
+		tablas.add("PRODUCTO");//17
+		tablas.add("PLAN_CONSUMO");//18
+		tablas.add("CONVENCION");//19
+		tablas.add("PARTICIPANTES_CONVENCION");//20
+		tablas.add("SERVICIOS_CONVENCION");//21
 		tablas.add("RESERVA_HABITACION");
 		tablas.add("HUESPED_RESERVA");
 		tablas.add("CUENTA_SERVICIO");
@@ -217,6 +223,9 @@ public class PersistenciaHotelandes {
 		sqlSpaa = new SQLSpaa(this);
 		sqlProducto = new SQLProducto(this);
 		sqlPlanConsumo = new SQLPlanConsumo(this);
+		sqlConvencion = new SQLConvencion(this);
+		sqlParticipantesConvencion = new SQLParticipantesConvencion(this);
+		sqlServiciosConvencion = new SQLServiciosConvencion(this);
 		sqlReservaHabitacion = new SQLReservaHabitacion(this);
 		sqlHuespedReserva = new SQLHuespedReserva(this);
 		sqlCuentaServicio = new SQLCuentaServicio(this);
@@ -233,99 +242,112 @@ public class PersistenciaHotelandes {
 	}
 	public String darTablaCadenaHotelera() 
 	{
-		return tablas.get(1);
+		return "CADENA_HOTELERA";
 	} 
 	public String darTablaRolUsuario()
 	{
-		return tablas.get(2);
+		return "ROL_USUARIO";
 	}
 	public String darTablaTipoHabitacion() 
 	{
-		return tablas.get(3);
+		return "TIPO_HABITACION";
 	}
 	public String darTablaTipoServicio() 
 	{
-		return tablas.get(4);
+		return "TIPO_SERVICIO";
 	}
 	public String darTablaHotel() 
 	{
-		return tablas.get(5);
+		return "HOTEL";
 	}
 	public String darTablaUsuario() 
 	{
-		return tablas.get(6);
+		return "USUARIO";
 	}
 	public String darTablaHabitacion() 
 	{
-		return tablas.get(7);
+		return "HABITACION";
 	}
 	public String darTablaServicio()
 	{
-		return tablas.get(8);
+		return "SERVICIO";
 	}
 	public String darTablaPiscina()
 	{
-		return tablas.get(9);
+		return "PISCINA";
 	}
 	public String darTablaGimnasio()
 	{
-		return tablas.get(10);
+		return "GIMNASIO";
 	}
 	public String darTablaInternet()
 	{ 
-		return tablas.get(11);
+		return "INTERNET";
 	}
 	public String darTablaEstablecimiento()
 	{
-		return tablas.get(12);
+		return "ESTABLECIMIENTO";
 	}
 	public String darTablaPrestamoUtensilio()
 	{
-		return tablas.get(13);
+		return "PRESTAMO_UTENSILIO";
 	}
 	public String darTablaSalonConferencia()
 	{
-		return tablas.get(14);
+		return "SALON_CONFERENCIA";
 	}
 	public String darTablaSalonReunion()
 	{
-		return tablas.get(15);
+		return "SALON_REUNION";
 	}
 	public String darTablaSpaa()
 	{
-		return tablas.get(16);
+		return "SPAA";
 	}
 	public String darTablaProducto()
 	{
-		return tablas.get(17);
+		return "PRODUCTO";
 	}
 	public String darTablaPlanConsumo()
 	{
-		return tablas.get(18);
+		return "PLAN_CONSUMO";
 	}
+	public String darTablaConvencion()
+	{
+		return "CONVENCION";
+	}
+	public String darTablaParticipantesConvencion()
+	{
+		return "PARTICIPANTES_CONVENCION";
+	}
+	public String darTablaServiciosConvencion()
+	{
+		return "SERVICIOS_CONVENCION";
+	}
+	
 	public String darTablaReservaHabitacion()
 	{
-		return tablas.get(19);
+		return "RESERVA_HABITACION";
 	}
 	public String darTablaHuespedReserva()
 	{
-		return tablas.get(20);
+		return "HUESPED_RESERVA";
 	}
 	public String darTablaCuentaServicio()
 	{
-		return tablas.get(21);
+		return "CUENTA_SERVICIO";
 	}
 	public String darTablaPedido()
 	{
-		return tablas.get(22);
+		return "PEDIDO";
 	}
 	public String darTablaProductoPedido()
 	{
-		return tablas.get(23);
+		return "PRODUCTO_PEDIDO";
 	}
 	public String darTablaReservaServicio()
 	{
-		return tablas.get(24);
+		return "RESERVA_SERVICIO";
 	}
 	private long nextval()
 	{
@@ -912,20 +934,20 @@ public class PersistenciaHotelandes {
 	}
 
 	
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo,Long idConvencion)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo)
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx=pm.currentTransaction();
 		try
 		{
-			long id = nextval ();
+			long id = nextval();
 			tx.begin();
-			long tuplasInsertadas = sqlReservaHabitacion.adicionarReservaHabitacion(pm,id,fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,0,idConvencion);
+			long tuplasInsertadas = sqlReservaHabitacion.adicionarReservaHabitacion(pm,id,fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,0);
 			tx.commit ();
 			
 			log.trace ("Inserción de reserva de habitacion: " + id + ": " + tuplasInsertadas + " tuplas insertadas");
 			
-			return new ReservaHabitacion(id,Timestamp.valueOf(fechaIn),Timestamp.valueOf(fechaOut),numPersonas,0,nombreHotel,0,idPlanConsumo,0,idConvencion);
+			return new ReservaHabitacion(id,Timestamp.valueOf(fechaIn),Timestamp.valueOf(fechaOut),numPersonas,0,nombreHotel,0,idPlanConsumo,0,null);
 		}
 		catch (Exception e)
 		{
@@ -2057,6 +2079,7 @@ public class PersistenciaHotelandes {
 		}
 		return rep;
 	}
+	
 	//Requerimiento funcional de consulta 5
 	public List<String[]> darConsumoPorUsuario(TipoDocumento tipoDocumento,int numDoc,String fechaInf,String fechaSup)
 	{
@@ -2101,11 +2124,37 @@ public class PersistenciaHotelandes {
 	//---------------------------------------------------------------------------------------------------------------------
 	//Metodo para inscribir una convencion
 
-	public List<HashMap<String,ArrayList<String>>> inscribirReservasConvencion(String fechaIn, String fechaOut, String nombreHotel,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
+	public HashMap<String,ArrayList<String>> inscribirReservasConvencion(String fechaIn, String fechaOut, String nombreHotel,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacion, String[] servicios)
 	{
 		System.out.println("2");
 		return sqlReservaHabitacion.darHabitacionesDisponiblesParaConvencion(pmf.getPersistenceManager(), fechaIn, fechaOut, nombreHotel, tiposHabitacion, servicios);
 	}
 	
-	
+	public void reservarHabitaciones(String nombreHotel,String fechaIn,String fechaOut,HashMap<String,ArrayList<String>> habitacionesPorTipo,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacionClientes,long idConvencion)
+	{
+		sqlReservaHabitacion.reservarHabitaciones(sqlHuespedReserva,pmf.getPersistenceManager(), nombreHotel, fechaIn, fechaOut, habitacionesPorTipo, tiposHabitacionClientes, idConvencion);
+	}
+
+	public long adicionarConvencion(String fechaIn,String fechaOut,String idPlanConsumo,String hotel)
+	{
+		System.out.println("a2");
+		long idConvencion = nextval();
+		System.out.println("El id de la convencion es: "+String.valueOf(idConvencion));
+		String idString = String.valueOf(idConvencion);
+		System.out.println("a3");
+		sqlConvencion.adicionarConvencion(pmf.getPersistenceManager(), idString, fechaIn, fechaOut, idPlanConsumo, hotel);
+		return idConvencion;
+	}
+
+	public void deshacerConvencion(long idConvencion)
+	{
+		sqlReservaHabitacion.deshacerConvencion(pmf.getPersistenceManager(), String.valueOf(idConvencion));
+		sqlReservaHabitacion.deshacerConvencion1(pmf.getPersistenceManager(), String.valueOf(idConvencion));
+	}
+
+	public double darCostoConvencion(long idConvencion)
+	{
+		sqlReservaHabitacion.pagarSalida(pmf.getPersistenceManager(), String.valueOf(idConvencion));
+		return sqlReservaHabitacion.darCostoConvencion(pmf.getPersistenceManager(), String.valueOf(idConvencion));
+	}
 }

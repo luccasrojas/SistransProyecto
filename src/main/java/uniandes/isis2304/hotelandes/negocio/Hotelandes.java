@@ -202,10 +202,10 @@ public class Hotelandes {
 		log.info ("Adicionando plan de consumo " + planConsumo.getIdPlanConsumo());
 		return planConsumo;
 	}
-	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo, Long idConvencion)
+	public ReservaHabitacion adicionarReservaHabitacion(String fechaIn,String fechaOut,int numPersonas,String nombreHotel,long idPlanConsumo)
 	{
 		log.info ("Adicionando reserva de habitacion");
-		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo,null);
+		ReservaHabitacion reservaHabitacion = ph.adicionarReservaHabitacion(fechaIn,fechaOut,numPersonas,nombreHotel,idPlanConsumo);
 		log.info ("Adicionando reserva de habitacion");
 		return reservaHabitacion;
 	}
@@ -919,9 +919,27 @@ public class Hotelandes {
 	}
 
 	//Registrar reserva de una convención
-	public List<HashMap<String,ArrayList<String>>> registrarReservaConvencion(String nombreHotel,String fechaInicio,String fechaFin,HashMap<String,List<List<String[]>>> tiposHabitacion, String[] servicios)
+	public HashMap<String,ArrayList<String>> registrarReservaConvencion(String nombreHotel,String fechaInicio,String fechaFin,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacion, String[] servicios)
 	{
 		System.out.println("1");
 		return ph.inscribirReservasConvencion(nombreHotel, fechaInicio, fechaFin, tiposHabitacion, servicios);
+	}
+	public void reservarHabitaciones(String nombreHotel,String fechaIn,String fechaOut,HashMap<String,ArrayList<String>> habitacionesPorTipo,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacionClientes,long idConvencion)
+	{
+		ph.reservarHabitaciones(nombreHotel, fechaIn, fechaOut, habitacionesPorTipo, tiposHabitacionClientes, idConvencion);
+	}
+
+	public long adicionarConvencion(String fechaIn,String fechaOut,String idPlanConsumo,String hotel)
+	{
+		System.out.println("a1");
+		return ph.adicionarConvencion(fechaIn, fechaOut, idPlanConsumo, hotel);
+	}
+	public void deshacerConvencion(long idConvencion)
+	{
+		ph.deshacerConvencion(idConvencion);
+	}
+	public double darCostoConvencion(long idConvencion)
+	{
+		return ph.darCostoConvencion(idConvencion);
 	}
 }

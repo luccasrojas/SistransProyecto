@@ -69,7 +69,10 @@ public class SQLUtil {
 		Query qSalonReunion = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaSalonReunion());
 		Query qSpaa = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaSpaa());
 		Query qProducto = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaProducto());
-		Query qPlanConsumo =pm.newQuery(SQL,"DELETE FROM "+ph.darTablaPlanConsumo());
+		Query qPlanConsumo = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaPlanConsumo());
+		Query qConvencion = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaConvencion());
+		Query qParticipantesConvencion = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaParticipantesConvencion());
+		Query qServiciosConvencion = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaServiciosConvencion());
 		Query qReservaHabitacion = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaReservaHabitacion());
 		Query qHuespedReserva = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaHuespedReserva());
 		Query qCuentaServicio = pm.newQuery(SQL,"DELETE FROM "+ph.darTablaCuentaServicio());
@@ -94,6 +97,9 @@ public class SQLUtil {
 		long spaaE = (long) qSpaa.executeUnique();
 		long productoE = (long) qProducto.executeUnique();
 		long planConsumoE = (long) qPlanConsumo.executeUnique();
+		long convencionE = (long) qConvencion.executeUnique();
+		long participantesConvencionE = (long) qParticipantesConvencion.executeUnique();
+		long serviciosConvencionE = (long) qServiciosConvencion.executeUnique();
 		long reservaHabitacionE = (long) qReservaHabitacion.executeUnique();
 		long huespedReservaE = (long) qHuespedReserva.executeUnique();
 		long cuentaServicioE = (long) qCuentaServicio.executeUnique();
@@ -103,7 +109,7 @@ public class SQLUtil {
 	
 		return new long[] {cadenaHoteleraE, tipoHabitacionE, tipoServicioE, hotelE, 
 			usuarioE, habitacionE, servicioE,piscinaE,gimnasioE,internetE,establecimientoE,
-			prestamoUtensilioE,salonConferenciasE,salonReunionE,spaaE,productoE,planConsumoE,
+			prestamoUtensilioE,salonConferenciasE,salonReunionE,spaaE,productoE,planConsumoE, convencionE, participantesConvencionE, serviciosConvencionE,
 			reservaHabitacionE,huespedReservaE,cuentaServicioE,pedidoE,productoPedidoE,reservaServicioE};
 	}
 	

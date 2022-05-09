@@ -1500,7 +1500,7 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 				String nombreHotelStr = nombreHotel.getText();
 				long idPlanConsumoLong = Long.parseLong(idPlanConsumo.getText());
 				
-				VOReservaHabitacion c = hotelandes.adicionarReservaHabitacion(fechaInVal, fechaOutVal, numPersonasInt, nombreHotelStr, idPlanConsumoLong, null);
+				VOReservaHabitacion c = hotelandes.adicionarReservaHabitacion(fechaInVal, fechaOutVal, numPersonasInt, nombreHotelStr, idPlanConsumoLong);
 				
 				String resultado = "En adicionarReservaHabitacion\n\n";
 				resultado += "Reserva de habitacion adicionada exitosamente: " + c;
@@ -1915,7 +1915,7 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 				String[] habitaciones = campoUsuarios.getText().split(";");
 				//		 habitaciones = ["SENCILLA:CC-101389129" , "FAMILIAR:CC-1828021_TI-199019315,CE-1920173"]
 				
-				HashMap<String,List<List<String[]>>> campo = new HashMap<String,List<List<String[]>>>();
+				HashMap<String,ArrayList<ArrayList<String[]>>> campo = new HashMap<String,ArrayList<ArrayList<String[]>>>();
 				for (String habitacion : habitaciones) {
 					String tipoHabitacion = habitacion.split(":")[0];
 					// 	   tipoHabitacion = FAMILIAR
@@ -1923,12 +1923,12 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 					String[] usuarios = habitacion.split(":")[1].split(",");
 					// 		 usuarios = ["CC-1828021_TI-199019315" , "CE-1920173"]
 					
-					List<List<String[]>> listaUsuarios = new ArrayList<List<String[]>>();
+					ArrayList<ArrayList<String[]>> listaUsuarios = new ArrayList<ArrayList<String[]>>();
 					for (String usuarioshab_ : usuarios) {
 						String[] usuarioshab = usuarioshab_.split("_");
 						// 		 usuarioshab = ["CC-1828021" , "TI-199019315"]
 						
-						List<String[]> listaHabitacion = new ArrayList<String[]>();
+						ArrayList<String[]> listaHabitacion = new ArrayList<String[]>();
 						for (String usuario : usuarioshab) {
 							String[] usu = new String[2];
 							usu[0] = usuario.split("-")[0];
@@ -1950,18 +1950,34 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 				System.out.println(nombreHotelVal);
 				System.out.println(campo);
 				System.out.println(servicios);
-				List<HashMap<String,ArrayList<String>>> resp = hotelandes.registrarReservaConvencion(fechaInVal, fechaOutVal, nombreHotelVal, campo, servicios);
+				HashMap<String,ArrayList<String>> resp = hotelandes.registrarReservaConvencion(fechaInVal, fechaOutVal, nombreHotelVal, campo, servicios);
+				if (resp == null)
+				{
+					System.out.println("aca");
+					String resultado = "No hay cupos suficientes para la convencion."+"\n\n";
+					resultado += "\n Operación terminada";
+					panelDatos.actualizarInterfaz(resultado);
+				}
+				else
+				{
 				System.out.println("aqui");
-				for (HashMap<String,ArrayList<String>> res : resp) {
-					String resultado = "";
-					for (String key : res.keySet()) {
-						resultado += key + ": ";
-						for (String val : res.get(key)) {
-							resultado += val + " ";
-						}
-						resultado += "\n";
-					}
-					System.out.println(resultado);
+				long idConvencion = hotelandes.adicionarConvencion(fechaInVal, fechaOutVal, null, nombreHotelVal);
+				System.out.println("idConvencion: "+idConvencion);
+				System.out.println("alla");
+				hotelandes.reservarHabitaciones(nombreHotelVal, fechaInVal, fechaOutVal, resp, campo, idConvencion);
+				System.out.println("por alla");
+				for(String tipo: resp.keySet())
+				{
+					System.out.println(tipo);
+					for (String habitacion : resp.get(tipo)) 
+					{
+						System.out.println(habitacion);
+					}	
+				}
+				
+				String resultado = "Se anadio la convencion con id: "+idConvencion+".\n\n";
+				resultado += "\n Operación terminada";
+				panelDatos.actualizarInterfaz(resultado);
 				}
 			}
 		}
@@ -1973,6 +1989,63 @@ public class InterfazHotelandesApp extends JFrame implements ActionListener
 		}
 	}
 
+	/* *****************************
+	 * RF 13
+	 */
+	
+	public void cancelarReservaConvencion() 
+	{
+		try 
+    	{
+    		String idConvencion = JOptionPane.showInputDialog (this, "Id de la convencion?", "Cancelar convencion", JOptionPane.QUESTION_MESSAGE);
+    		if (idConvencion != null)
+    		{
+				hotelandes.deshacerConvencion(Long.valueOf(idConvencion));
+        		String resultado = "En cancelarReservaConvencion\n\n";
+        		resultado += "Reserva Convencion cancelada exitosamente: " + idConvencion;
+    			resultado += "\n Operación terminada";
+    			panelDatos.actualizarInterfaz(resultado);
+    		}
+    		else
+    		{
+    			panelDatos.actualizarInterfaz("Operación cancelada por el usuario");
+    		}
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+	}
+
+	//RF14
+	public void registrarSalidaConvencion() 
+	{
+		try 
+    	{
+    		String idConvencion = JOptionPane.showInputDialog (this, "Id de la convencion?", "Dar fin a convencion", JOptionPane.QUESTION_MESSAGE);
+			if (idConvencion != null)
+			{
+				double costo = hotelandes.darCostoConvencion(Long.valueOf(idConvencion));
+				String resultado = "En registrarSalidaConvencion\n\n";
+				resultado += "Reserva de la convencion finalizada.\n";
+				resultado += "Costo de la convencion: " + costo;
+				panelDatos.actualizarInterfaz(resultado);
+			}
+			else
+			{
+				panelDatos.actualizarInterfaz("Operación cancelada por el usuario");
+			}
+			
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+	}
 	/********************************
 	 * RFCs
 	 ********************************/

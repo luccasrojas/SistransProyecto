@@ -64,17 +64,25 @@ class SQLReservaHabitacion
 	 * @param idPlanConsumo - Id del plan de consumo con el que se costeará la reserva
 	 * @return El número de tuplas insertadas
 	 */
-	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado, Long idConvencion)
+	public long adicionarReservaHabitacion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, long idPlanConsumo, int pagado)
+	{
+        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO) values (?, ?, ?, ?, ?, ?, ?, ?)");
+        q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
+        return (long) q.executeUnique();
+	}
+
+	public long adicionarReservaHabitacionConvencion (PersistenceManager pm, long idReservaHabitacion, String fechaIn, String fechaOut, int numPersonas, String nombreHotel, String numeroHabitacion, int pagado, Long idConvencion)
 	{
 		Query q;
 		if (idConvencion == null) {
-			q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO) values (?, ?, ?, ?, ?, ?, ?, ?)");
+			q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, NUMERO_HABITACION, PAGADO) values (?, ?, ?, ?, ?, ?, ?, ?)");
+			q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, numeroHabitacion, pagado);
 		}
 		else {
-        	q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, ID_PLAN_CONSUMO, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        	q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaReservaHabitacion () + "(ID_RESERVA_HABITACION, FECHA_IN, FECHA_OUT, NUM_PERSONAS, CUENTA_MINIBAR, NOMBRE_HOTEL, NUMERO_HABITACION, PAGADO, ID_CONVENCION) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, numeroHabitacion, pagado, idConvencion);
 		}
-		q.setParameters(idReservaHabitacion, fechaIn, fechaOut, numPersonas, 0, nombreHotel, idPlanConsumo, pagado);
-        return (long) q.executeUnique();
+		return (long) q.executeUnique();
 	}
 
 	public long actualizarHabitacion (PersistenceManager pm, long idReservaHabitacion, int numeroHabitacion)
@@ -227,14 +235,13 @@ class SQLReservaHabitacion
 
 	//Funcion que devuelve las habitaciones disponibles para una fecha dada
 	//GRANDE
-	public List<HashMap<String,ArrayList<String>>> darHabitacionesDisponiblesParaConvencion(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, HashMap<String,List<List<String[]>>> tiposHabitacionCantidad, String[] servicios)
+	public HashMap<String,ArrayList<String>> darHabitacionesDisponiblesParaConvencion(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel, HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacionCantidad, String[] servicios)
 	{
 		try
 		{
 			System.out.println("3");
-			List<HashMap<String,ArrayList<String>>> res = new ArrayList<HashMap<String,ArrayList<String>>>();
+			HashMap<String,ArrayList<String>> res = new HashMap<String,ArrayList<String>>();
 			System.out.println("4");
-			boolean c = false;
 			for(String tipoHabitacion:tiposHabitacionCantidad.keySet())
 			{
 				System.out.println("5");
@@ -257,20 +264,14 @@ class SQLReservaHabitacion
 				{
 					System.out.println("9");
 					HashMap<String,ArrayList<String>> habitacionesDisponibles = new HashMap<String,ArrayList<String>>();
-					habitacionesDisponibles.put(tipoHabitacion, strHabitaciones);
-					res.add(habitacionesDisponibles);
+					res.put(tipoHabitacion,strHabitaciones);
 				}
 
 			}
-			if (!c)
-			{
-				System.out.println("10");
-				return res;
-			}
-			else
-			{
-				return null;
-			}
+
+			System.out.println("10");
+			return res;
+
 				
 		}
 		catch(Exception e)
@@ -278,6 +279,7 @@ class SQLReservaHabitacion
 			return null;
 		}
 	}
+	
 	public void reservarHabitaciones(SQLHuespedReserva hr,PersistenceManager pm,String nombreHotel,String fechaIn,String fechaOut,HashMap<String,ArrayList<String>> habitacionesPorTipo,HashMap<String,ArrayList<ArrayList<String[]>>> tiposHabitacionClientes,long idConvencion)
 	{
 		for(String tipoHabitacion:habitacionesPorTipo.keySet())
@@ -291,25 +293,57 @@ class SQLReservaHabitacion
 			{
 				long idReservaHabitacion = aux.nextval(pm);
 				//Por cada una de las habitaciones necesarias hacer la reserva y generar huesped reserva
-				adicionarReservaHabitacion(pm, idReservaHabitacion, fechaIn, fechaOut,usuarios.get(i).size() , nombreHotel,Long.valueOf(habitacionPorTipo.get(i)),0, idConvencion);
+				adicionarReservaHabitacionConvencion(pm, idReservaHabitacion, fechaIn, fechaOut,usuarios.get(i).size() , nombreHotel,String.valueOf(habitacionPorTipo.get(i)),0, idConvencion);
 				for(int j=0;j<usuarios.get(i).size();j++)
 				{
 					//Todos los que se quedan en una misma habitacion anadirlos a huesped reserva
 					if (j==0)
 					{
 						//Persistence manager pm,long idReservaHabitacion,Tipo documento tipoDocumento,int numeroDocumento,int acompanante
-					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[2]), 1);
+					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[1]), 1);
 					}
 					else
 					{
-					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[2]), 0);
+					hr.adicionarHuespedReserva(pm, idReservaHabitacion, TipoDocumento.valueOf(usuarios.get(i).get(j)[0]),Integer.parseInt(usuarios.get(i).get(j)[1]), 0);
 					}
 
 				}
 				
 			}
 		}
+	}
+	public void deshacerConvencion(PersistenceManager pm, String idConvencion)
+	{
+		String peticion = "DELETE FROM RESERVA_HABITACION WHERE ID_CONVENCION = "+idConvencion;
+		Query q = pm.newQuery(SQL,peticion);
+		q.execute();
+	}
+	public void deshacerConvencion1(PersistenceManager pm,String idConvencion)
+	{
+		String peticion = "DELETE FROM CONVENCION WHERE ID_CONVENCION = "+idConvencion;
+		Query q = pm.newQuery(SQL,peticion);
+		q.execute();
 	}	
+	public double darCostoConvencion(PersistenceManager pm, String idConvencion)
+	{
+		String peticion = "SELECT ID_RESERVA_HABITACION FROM RESERVA_HABITACION WHERE ID_CONVENCION = "+idConvencion;
+		Query q = pm.newQuery(SQL,peticion);
+		List<Object> idReservas = (List<Object>)q.executeList();
+		double costo = 0;
+		for(Object idReserva:idReservas)
+		{
+			System.out.println("EL costo parcial es de :"+registrarSalida(pm,String.valueOf(idReserva)));
+			costo += Double.valueOf(registrarSalida(pm, String.valueOf(idReserva)));
+		}	
+		System.out.println(costo);
+		return costo;
+	}
+	public void pagarSalida(PersistenceManager pm, String idConvencion)
+	{
+		String peticion = "UPDATE RESERVA_HABITACION SET PAGADO = 1 WHERE ID_CONVENCION = "+idConvencion;
+		Query q = pm.newQuery(SQL,peticion);
+		q.execute();
+	}
 	/*
 	public ArrayList<Object> darHabitacionesParaReservas(PersistenceManager pm, String fechaIn,String fechaOut, String nombreHotel,String tipoHabitacion)
 	{

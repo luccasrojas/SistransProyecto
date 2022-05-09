@@ -6,12 +6,12 @@ public class CadenaHotelera implements VOCadenaHotelera{
 	 * 			Atributos
 	 *****************************************************************/
 	/**
-	 * El nombre de cada cadena hotelera (ÚNICO)
+	 * El nombre de cada cadena hotelera (ï¿½NICO)
 	 */
 	private String nombre;
 	
 	/* ****************************************************************
-	 * 			Métodos 
+	 * 			Mï¿½todos 
 	 *****************************************************************/
 	/**
 	 * Constructor por defecto
@@ -42,5 +42,4 @@ public class CadenaHotelera implements VOCadenaHotelera{
 	{
 		return "Cadena Hotelera [nombre=" + nombre + "]";
 	}
-
 }

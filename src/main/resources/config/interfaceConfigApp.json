@@ -53,7 +53,7 @@
 					"event":"registrarSalidaDeReserva"
 				},
 				{
-					"label":"[RF12] Reservar alojamiento y servicios para una convención",
+					"label":"[RF12] Reservar alojamiento y servicios para una convencion",
 					"event":"registrarReservarConvencion"
 				},
 				{
@@ -62,7 +62,7 @@
 				},
 				{
 					"label":"[RF14] Registrar el fin de una convencion",
-					"event":"registrarFinConvencion"
+					"event":"registrarSalidaConvencion"
 				}
 			]
 		},

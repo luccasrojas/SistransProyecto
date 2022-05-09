@@ -57,8 +57,8 @@ class SQLHuespedReserva
 	 */
 	public long adicionarHuespedReserva (PersistenceManager pm, long idReservaHabitacion, TipoDocumento tipoDocumento, int numeroDocumento,int acompanante)
 	{
-        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaHuespedReserva () + "(ID_RESERVA_HABITACION, TIPO_DOCUMENTO, NUMERO_DOCUMENTO) values (?, ?, ?,?)");
-        q.setParameters(idReservaHabitacion, tipoDocumento, numeroDocumento,acompanante);
+        Query q = pm.newQuery(SQL, "INSERT INTO " + ph.darTablaHuespedReserva () + "(ID_RESERVA_HABITACION, TIPO_DOCUMENTO, NUMERO_DOCUMENTO, ACOMPANANTE) values (?, ?, ?, ?)");
+        q.setParameters(idReservaHabitacion, tipoDocumento.toString(), numeroDocumento,acompanante);
         return (long) q.executeUnique();
 	}
 
